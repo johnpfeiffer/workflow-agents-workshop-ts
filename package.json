@@ -15,6 +15,7 @@
     "packages/workflow-agents"
   ],
   "scripts": {
+    "setup": "node scripts/setup-attendee.js",
     "typecheck": "npm run typecheck --workspaces --if-present && tsc -p tests/tsconfig.json",
     "test": "AGENT_MODEL=mock RENDER_USE_LOCAL_DEV=true node --import tsx --test \"tests/**/*.test.ts\"",
     "test:unit": "AGENT_MODEL=mock node --import tsx --test \"tests/unit/**/*.test.ts\"",
@@ -29,7 +30,8 @@
     "docker:logs": "docker compose logs -f"
   },
   "dependencies": {
-    "tsx": "^4.20.5"
+    "tsx": "^4.20.5",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
