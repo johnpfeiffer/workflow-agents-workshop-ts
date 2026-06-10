@@ -25,7 +25,11 @@ export function agentTask(agent: Agent): AgentTaskRun {
   return task(
     {
       name: agent.name,
+      // Derive a timeout from the agent's wall-clock budget as a convenience, then
+      // forward every declared task setting (retry, timeout, plan). Explicit
+      // `agent.task` values win over the budget-derived default.
       ...(agent.budget?.maxWallSeconds ? { timeoutSeconds: agent.budget.maxWallSeconds } : {}),
+      ...agent.task,
     },
     async function agentRun(input: AgentInput, runId?: string): Promise<AgentResult> {
       // Each task runs in its own (possibly short-lived) container, so flush span
