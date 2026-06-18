@@ -178,7 +178,7 @@ class OpenAIClient implements ModelClient {
     const body: Record<string, unknown> = {
       model: args.model.model,
       messages,
-      max_tokens: args.sampling?.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS,
+      max_completion_tokens: args.sampling?.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS,
       ...(args.sampling?.temperature !== undefined ? { temperature: args.sampling.temperature } : {}),
       ...(args.tools.length > 0
         ? {

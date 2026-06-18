@@ -102,7 +102,14 @@ export async function createApp(): Promise<Hono> {
     const started = await render.workflows.startTask(slug, [input]);
     const finished = await waitForWorkflowTaskRun(render, started.taskRunId);
     const ok = finished.status === "succeeded" || finished.status === "completed";
-    if (!ok) throw new Error(finished.error ? String(finished.error) : "workflow failed");
+    if (!ok) {
+      const errMsg = finished.error instanceof Error
+        ? finished.error.message
+        : typeof finished.error === 'string'
+          ? finished.error
+          : JSON.stringify(finished.error) ?? 'workflow failed';
+      throw new Error(errMsg);
+    }
     // The SDK returns the task's return value wrapped in a results array (one
     // entry per invocation). Unwrap the single result so callers see the same
     // shape the in-process path returns directly.
