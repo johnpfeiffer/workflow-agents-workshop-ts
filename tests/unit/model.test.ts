@@ -4,10 +4,23 @@ import { resolveClient, resolveModelSpec } from '@workshop/agent'
 import type { CompleteArgs } from '@workshop/agent'
 
 test('resolveModelSpec maps tiers and infers providers', () => {
-  assert.equal(resolveModelSpec('medium').provider, 'anthropic')
+  assert.equal(resolveModelSpec('medium').provider, 'openai')
+  assert.equal(resolveModelSpec('medium').model, 'gpt-4o')
   assert.equal(resolveModelSpec().model, resolveModelSpec('medium').model) // default = medium
   assert.equal(resolveModelSpec('gpt-4o').provider, 'openai')
   assert.equal(resolveModelSpec('claude-sonnet-4-6').provider, 'anthropic')
+
+  // Composite keys resolve to the correct provider and model
+  assert.equal(resolveModelSpec('openai:medium').provider, 'openai')
+  assert.equal(resolveModelSpec('openai:medium').model, 'gpt-4o')
+  assert.equal(resolveModelSpec('openai:small').model, 'gpt-4o-mini')
+  assert.equal(resolveModelSpec('openai:large').model, 'gpt-4.1')
+  assert.equal(resolveModelSpec('anthropic:medium').provider, 'anthropic')
+  assert.equal(resolveModelSpec('anthropic:medium').model, 'claude-sonnet-4-6')
+
+  // Provider passed separately with a bare tier
+  assert.equal(resolveModelSpec('medium', 'anthropic').model, 'claude-sonnet-4-6')
+  assert.equal(resolveModelSpec('medium', 'openai').model, 'gpt-4o')
 })
 
 function args(system: string): CompleteArgs {
